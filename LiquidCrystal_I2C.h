@@ -44,13 +44,27 @@
 #define LCD_5x10DOTS 0x04
 #define LCD_5x8DOTS 0x00
 
-// flags for backlight control
+/*** 4bit data / 4bit control ***
+
+// flags for backlight control 4bit data / 4bit command
 #define LCD_BACKLIGHT 0x08
 #define LCD_NOBACKLIGHT 0x00
 
 #define En B00000100  // Enable bit
 #define Rw B00000010  // Read/Write bit
 #define Rs B00000001  // Register select bit
+
+*/
+
+/*** 4bit control / 4bit data ***/
+
+// flags for backlight control 
+#define LCD_BACKLIGHT 0x00
+#define LCD_NOBACKLIGHT 0x80
+
+#define En B00010000  // Enable bit
+#define Rw B00100000  // Read/Write bit
+#define Rs B01000000  // Register select bit
 
 class LiquidCrystal_I2C : public Print {
 public:

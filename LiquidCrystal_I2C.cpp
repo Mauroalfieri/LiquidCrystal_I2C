@@ -86,21 +86,40 @@ void LiquidCrystal_I2C::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
   	//put the LCD into 4 bit mode
 	// this is according to the hitachi HD44780 datasheet
 	// figure 24, pg 46
+
+	/*** 4bit data / 4bit control ***
 	
-	  // we start in 8bit mode, try to set 4 bit mode
-   write4bits(0x03 << 4);
-   delayMicroseconds(4500); // wait min 4.1ms
+	// we start in 8bit mode, try to set 4 bit mode
+        write4bits(0x03 << 4);
+        delayMicroseconds(4500); // wait min 4.1ms
    
-   // second try
-   write4bits(0x03 << 4);
-   delayMicroseconds(4500); // wait min 4.1ms
+        // second try
+        write4bits(0x03 << 4);
+   	delayMicroseconds(4500); // wait min 4.1ms
    
-   // third go!
-   write4bits(0x03 << 4); 
-   delayMicroseconds(150);
+   	// third go!
+   	write4bits(0x03 << 4); 
+   	delayMicroseconds(150);
    
-   // finally, set to 4-bit interface
-   write4bits(0x02 << 4); 
+   	// finally, set to 4-bit interface
+   	write4bits(0x02 << 4); 
+        
+	/*** 4bit control / 4bit data ***/
+
+	// we start in 8bit mode, try to set 4 bit mode
+        write4bits(0x03);
+        delayMicroseconds(4500); // wait min 4.1ms
+
+        // second try
+        write4bits(0x03);
+        delayMicroseconds(4500); // wait min 4.1ms
+
+        // third go!
+        write4bits(0x03);
+        delayMicroseconds(150);
+
+        // finally, set to 4-bit interface
+        write4bits(0x02);
 
 
 	// set # lines, font size, etc.
@@ -236,6 +255,8 @@ inline void LiquidCrystal_I2C::command(uint8_t value) {
 
 /************ low level data pushing commands **********/
 
+/*** 4bit data / 4bit control ***
+
 // write either command or data
 void LiquidCrystal_I2C::send(uint8_t value, uint8_t mode) {
 	uint8_t highnib=value&0xf0;
@@ -243,6 +264,17 @@ void LiquidCrystal_I2C::send(uint8_t value, uint8_t mode) {
        write4bits((highnib)|mode);
 	write4bits((lownib)|mode); 
 }
+
+/*** 4bit control / 4bit data ***/
+
+// write either command or data
+void LiquidCrystal_I2C::send(uint8_t value, uint8_t mode) {
+        uint8_t highnib=value>>4;
+        uint8_t lownib=value & 0x0F;
+        write4bits((highnib)|mode);
+        write4bits((lownib)|mode);
+}
+
 
 void LiquidCrystal_I2C::write4bits(uint8_t value) {
 	expanderWrite(value);
